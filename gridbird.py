@@ -13,7 +13,7 @@ class House:
     def supplyPower(self):
         ticks = 0
         while True:
-            print('%s ---- supplying-power----- battery %s'%(self.houseName,self.batteryState)) #the battery can supply power to the grid
+            print('%s ---- supplying-power----- battery  %s'%(self.houseName,self.batteryState)) #the battery can supply power to the grid
             self.batteryState = self.batteryState-1
             time.sleep(1)
             if (self.session_stopping == True):
