@@ -12,6 +12,7 @@ class House:
         self.battery_thread = None
         self.demand = 0 #No demand nessesary
 
+
     def supplyPower(self):
         ticks = 0
         while True:
@@ -101,17 +102,38 @@ def demand(house_num):
         myfile.close()
 
 def testHouseBidding():
+
     house1 = House('H1')
     house1.batteryState = 100
-    #randomData = DataPoints(5)
-    house1.start_supply_power_thread()
+    efi_comm_describe(house1.houseName)
 
     house2 = House('H2')
     house2.batteryState = 50
-    #randomData = DataPoints(5)
+
+    send_efi_comm_supply_instruction() #SIMULATE EFI here
+    house1.start_supply_power_thread()
+
+    #start consuming the energy from the other house
+    receive_efi_comm_charge_instruction() #SIMULATE EFI here again
     house2.start_consume_power_thread()
+
     time.sleep(5)
     house1.stop_supply()
+
+def efi_comm_describe(houseName):
+    print('<- EFI_Describe(%s, Storage)'%houseName)
+    print('<- EFI_Actuator0:runningmode(IDLE)')
+
+def receive_efi_comm_charge_instruction():
+    print('-> EFI_flexibleInstruction(Actuator0: charge, upperbound=100)')
+    print('<- EFI_instructionStatusUpdate(ACCEPTED, STARTED)')
+
+def send_efi_comm_supply_instruction():
+    print('<- EFI_flexibleInstruction(Actuator0: discharge, lowerbound=25')
+    print('<- EFI_instructionStatusUpdate(ACCEPTED, STARTED)')
+
+def find_lowest_bidder():
+    return "h1"
 
 if __name__ == "__main__":
     # Test all Houses and print its batterystatus
@@ -121,6 +143,9 @@ if __name__ == "__main__":
     storage(5)
     demand(5)
     testHouseBidding()
+    house = find_lowest_bidder()
+
+    #ToDO!
 
 
 
